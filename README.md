@@ -140,11 +140,13 @@ Usage:
 
 
 	The outputs:
-		A results file is written for each analysed spectrum. At the end of the run a fits file is
-		created, named e.g. 'stacked_1003689_ptmcmc.fits', that concatenates the results of all analysed spectra into 
-		one big table. The outputs are written to the specified write directory.
+		A results file is written for each analysed spectrum -this can be deleted. At the end of the run a fits file is
+		created, named e.g. 'stacked_1003689_AMY.fits', that concatenates the results of all analysed spectra into 
+		one big table. 
+		In the second extension one can find the analysed region of the spectrum, along with its best-fit template match which has been mapped onto the spectrum.
+		The outputs are written to the specified write directory.
 		
-		For each analysed spectrum, the outputs are:
+		For each analysed spectrum, the outputs in the first extension table are:
 			- <SPECTRUM>_result (in <WRITE_DIRECTORY>/results/)
 				This is a text file containing the results for the analysed spectrum. The 
 				columns are as follows:
@@ -175,6 +177,7 @@ Usage:
 				* calculated as the median less the 16th percentile of the marginalised posterior distribution
 				** calculated as the 84th percentile less the median of the marginalised posterior distribution
 
+		The following plots have been commented out in the code, but could easily be produced:
 			- <SPECTRUM>_spectrum.png (in <WRITE_DIRECTORY>/plots/)
 				This is a plot of the analysed region of the spectrum, along with its best-fit template match which has been mapped onto the spectrum.
 
