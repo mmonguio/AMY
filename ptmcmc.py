@@ -331,23 +331,23 @@ def mcmc_one(t):
 	fp = np.poly1d(Xp[-2:])
 	fitp = fp(wavelength)
 
-	# plot spectrum and best-fit
-	plt.plot(wavelength, flux, wavelength, model(Xp, wavelength) * fitp)
-	if exclude_region == True:
-		for n,line in enumerate(lines):
-			if n == 0:
-				plt.vlines([line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
-			elif n == (len(lines)-1):
-				plt.vlines([line[0]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
-			else:
-				plt.vlines([line[0], line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
+#	# plot spectrum and best-fit
+#	plt.plot(wavelength, flux, wavelength, model(Xp, wavelength) * fitp)
+#	if exclude_region == True:
+#		for n,line in enumerate(lines):
+#			if n == 0:
+#				plt.vlines([line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
+#			elif n == (len(lines)-1):
+#				plt.vlines([line[0]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
+#			else:
+#				plt.vlines([line[0], line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
 
-	plt.xlim(min_wav, max_wav)
-	plt.ylim(flux.min()*0.8, flux.max()*1.2)
-	plt.xlabel(r'Wavelength ($\AA$)')
-	plt.ylabel('Calibrated counts')
-	plt.savefig(write_directory + '/plots/' + t + '_spectrum.png', bbox_inches='tight')
-	plt.close()
+#	plt.xlim(min_wav, max_wav)
+#	plt.ylim(flux.min()*0.8, flux.max()*1.2)
+#	plt.xlabel(r'Wavelength ($\AA$)')
+#	plt.ylabel('Calibrated counts')
+#	plt.savefig(write_directory + '/plots/' + t + '_spectrum.png', bbox_inches='tight')
+#	plt.close()
 
 #	# plot mapping function
 #	plt.plot(wavelength, fitp, wavelength, flux / model(Xp, wavelength))
