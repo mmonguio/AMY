@@ -331,23 +331,23 @@ def mcmc_one(t):
 	fp = np.poly1d(Xp[-2:])
 	fitp = fp(wavelength)
 
-#	# plot spectrum and best-fit
-#	plt.plot(wavelength, flux, wavelength, model(Xp, wavelength) * fitp)
-#	if exclude_region == True:
-#		for n,line in enumerate(lines):
-#			if n == 0:
-#				plt.vlines([line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
-#			elif n == (len(lines)-1):
-#				plt.vlines([line[0]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
-#			else:
-#				plt.vlines([line[0], line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
+	# plot spectrum and best-fit
+	plt.plot(wavelength, flux, wavelength, model(Xp, wavelength) * fitp)
+	if exclude_region == True:
+		for n,line in enumerate(lines):
+			if n == 0:
+				plt.vlines([line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
+			elif n == (len(lines)-1):
+				plt.vlines([line[0]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
+			else:
+				plt.vlines([line[0], line[1]], flux.min()*0.8, flux.max()*1.2, colors='r', linestyles='dashed')
 
-#	plt.xlim(min_wav, max_wav)
-#	plt.ylim(flux.min()*0.8, flux.max()*1.2)
-#	plt.xlabel(r'Wavelength ($\AA$)')
-#	plt.ylabel('Calibrated counts')
-#	plt.savefig(write_directory + '/plots/' + t + '_spectrum.png', bbox_inches='tight')
-#	plt.close()
+	plt.xlim(min_wav, max_wav)
+	plt.ylim(flux.min()*0.8, flux.max()*1.2)
+	plt.xlabel(r'Wavelength ($\AA$)')
+	plt.ylabel('Calibrated counts')
+	plt.savefig(write_directory + '/plots/' + t + '_spectrum.png', bbox_inches='tight')
+	plt.close()
 
 #	# plot mapping function
 #	plt.plot(wavelength, fitp, wavelength, flux / model(Xp, wavelength))
@@ -363,7 +363,7 @@ def mcmc_one(t):
 	tab.close()
 
 	tab = open(write_directory + '/results/' + t +  '_spec', "w")
-	tab.write(np.str(list(flux))+" \n"+np.str(list(model(Xp, wavelength) * fitp))+ "\n")
+	tab.write("{0} ; {1} ; {2}; {3} ; {4} ; {5}\n".format(NSPEC,FIBREID,CNAME,t,list(flux),list(model(Xp, wavelength) * fitp)))
 	tab.close()
 
 	targ_end = datetime.now() - targ_start
@@ -419,65 +419,65 @@ def modheader(hdul):
 	hdul[1].header.comments['TFORM22']='data format of field: 4-byte REAL'
 	hdul[1].header.comments['TFORM23']='data format of field: 4-byte REAL'
 
-	hdul[1].header['TDISP1']='I4'
-	hdul[1].header['TDISP2']='I4'
-	hdul[1].header['TDISP3']='A20'
-	hdul[1].header['TDISP4']='A30'
-	hdul[1].header['TDISP5']='F7.3'
-	hdul[1].header['TDISP6']='F7.3'
-	hdul[1].header['TDISP7']='F7.3'
-	hdul[1].header['TDISP8']='F7.3'
-	hdul[1].header['TDISP9']='F7.3'
-	hdul[1].header['TDISP10']='F7.3'
-	hdul[1].header['TDISP11']='F7.3'
-	hdul[1].header['TDISP12']='F7.3'
-	hdul[1].header['TDISP13']='F7.3'
-	hdul[1].header['TDISP14']='F7.3'
-	hdul[1].header['TDISP15']='F7.3'
-	hdul[1].header['TDISP16']='F7.3'
-	hdul[1].header['TDISP17']='F7.3'
-	hdul[1].header['TDISP18']='F7.3'
-	hdul[1].header['TDISP19']='F7.3'
-	hdul[1].header['TDISP20']='F7.3'
-	hdul[1].header['TDISP21']='F7.3'
-	hdul[1].header['TDISP22']='F7.3'
-	hdul[1].header['TDISP23']='F7.3'
+	hdul[1].header.set('TDISP1','I4',after='TFORM1')
+	hdul[1].header.set('TDISP2','I4',after='TFORM2')
+	hdul[1].header.set('TDISP3','A20',after='TFORM3')
+	hdul[1].header.set('TDISP4','A30',after='TFORM4')
+	hdul[1].header.set('TDISP5','F7.3',after='TFORM5')
+	hdul[1].header.set('TDISP6','F7.3',after='TFORM6')
+	hdul[1].header.set('TDISP7','F7.3',after='TFORM7')
+	hdul[1].header.set('TDISP8','F7.3',after='TFORM8')
+	hdul[1].header.set('TDISP9','F7.3',after='TFORM9')
+	hdul[1].header.set('TDISP10','F7.3',after='TFORM10')
+	hdul[1].header.set('TDISP11','F7.3',after='TFORM11')
+	hdul[1].header.set('TDISP12','F7.3',after='TFORM12')
+	hdul[1].header.set('TDISP13','F7.3',after='TFORM13')
+	hdul[1].header.set('TDISP14','F7.3',after='TFORM14')
+	hdul[1].header.set('TDISP15','F7.3',after='TFORM15')
+	hdul[1].header.set('TDISP16','F7.3',after='TFORM16')
+	hdul[1].header.set('TDISP17','F7.3',after='TFORM17')
+	hdul[1].header.set('TDISP18','F7.3',after='TFORM18')
+	hdul[1].header.set('TDISP19','F7.3',after='TFORM19')
+	hdul[1].header.set('TDISP20','F7.3',after='TFORM20')
+	hdul[1].header.set('TDISP21','F7.3',after='TFORM21')
+	hdul[1].header.set('TDISP22','F7.3',after='TFORM22')
+	hdul[1].header.set('TDISP23','F7.3',after='TFORM23')
 
 
-	hdul[1].header['TUCD1']='meta.id'
-	hdul[1].header['TUCD2']='meta.id'
-	hdul[1].header['TUCD3']='meta.id;meta.main'
-	hdul[1].header['TUCD4']='meta.id'
-	hdul[1].header['TUCD5']='obs.param'
-	hdul[1].header['TUCD6']='phys.temperature.effective'
-	hdul[1].header['TUCD7']='stat.error;phys.temperature.effective'
-	hdul[1].header['TUCD8']='stat.error;phys.temperature.effective'
-	hdul[1].header['TUCD9']='phys.gravity'
-	hdul[1].header['TUCD10']='stat.error;phys.gravity'
-	hdul[1].header['TUCD11']='stat.error;phys.gravity'
-	hdul[1].header['TUCD12']='phys.veloc.rotat'
-	hdul[1].header['TUCD13']='stat.error;phys.veloc.rotat'
-	hdul[1].header['TUCD14']='stat.error;phys.veloc.rotat'
-	hdul[1].header['TUCD15']='spect.dopplerVeloc'
-	hdul[1].header['TUCD16']='stat.error;spect.dopplerVeloc'
-	hdul[1].header['TUCD17']='stat.error;spect.dopplerVeloc'
-	hdul[1].header['TUCD18']='obs.param'
-	hdul[1].header['TUCD19']='stat.error;obs.param'
-	hdul[1].header['TUCD20']='stat.error;obs.param'
-	hdul[1].header['TUCD21']='obs.param'
-	hdul[1].header['TUCD22']='stat.error;obs.param'
-	hdul[1].header['TUCD23']='stat.error;obs.param'
+	hdul[1].header.set('TUCD1','meta.id',after='TDISP1')
+	hdul[1].header.set('TUCD2','meta.id',after='TDISP2')
+	hdul[1].header.set('TUCD3','meta.id;meta.main',after='TDISP3')
+	hdul[1].header.set('TUCD4','meta.id',after='TDISP4')
+	hdul[1].header.set('TUCD5','obs.param',after='TDISP5')
+	hdul[1].header.set('TUCD6','phys.temperature.effective',after='TDISP6')
+	hdul[1].header.set('TUCD7','stat.error;phys.temperature.effective',after='TDISP7')
+	hdul[1].header.set('TUCD8','stat.error;phys.temperature.effective',after='TDISP8')
+	hdul[1].header.set('TUCD9','phys.gravity',after='TDISP9')
+	hdul[1].header.set('TUCD10','stat.error;phys.gravity',after='TDISP10')
+	hdul[1].header.set('TUCD11','stat.error;phys.gravity',after='TDISP11')
+	hdul[1].header.set('TUCD12','phys.veloc.rotat',after='TDISP12')
+	hdul[1].header.set('TUCD13','stat.error;phys.veloc.rotat',after='TDISP13')
+	hdul[1].header.set('TUCD14','stat.error;phys.veloc.rotat',after='TDISP14')
+	hdul[1].header.set('TUCD15','spect.dopplerVeloc',after='TDISP15')
+	hdul[1].header.set('TUCD16','stat.error;spect.dopplerVeloc',after='TDISP16')
+	hdul[1].header.set('TUCD17','stat.error;spect.dopplerVeloc',after='TDISP17')
+	hdul[1].header.set('TUCD18','obs.param',after='TDISP18')
+	hdul[1].header.set('TUCD19','stat.error;obs.param',after='TDISP19')
+	hdul[1].header.set('TUCD20','stat.error;obs.param',after='TDISP20')
+	hdul[1].header.set('TUCD21','obs.param',after='TDISP21')
+	hdul[1].header.set('TUCD22','stat.error;obs.param',after='TDISP22')
+	hdul[1].header.set('TUCD23','stat.error;obs.param',after='TDISP23')
 
 
-	hdul[1].header['TUNIT6']='K'
-	hdul[1].header['TUNIT7']='K'
-	hdul[1].header['TUNIT8']='K'
-	hdul[1].header['TUNIT12']='km/s'
-	hdul[1].header['TUNIT13']='km/s'
-	hdul[1].header['TUNIT14']='km/s'
-	hdul[1].header['TUNIT15']='km/s'
-	hdul[1].header['TUNIT16']='km/s'
-	hdul[1].header['TUNIT17']='km/s'
+	hdul[1].header.set('TUNIT6','K',after='TUCD6')
+	hdul[1].header.set('TUNIT7','K',after='TUCD7')
+	hdul[1].header.set('TUNIT8','K',after='TUCD8')
+	hdul[1].header.set('TUNIT12','km/s',after='TUCD12')
+	hdul[1].header.set('TUNIT13','km/s',after='TUCD13')
+	hdul[1].header.set('TUNIT14','km/s',after='TUCD14')
+	hdul[1].header.set('TUNIT15','km/s',after='TUCD15')
+	hdul[1].header.set('TUNIT16','km/s',after='TUCD16')
+	hdul[1].header.set('TUNIT17','km/s',after='TUCD17')
 
 	hdul[1].header.comments['TDISP1']='Display format for column'
 	hdul[1].header.comments['TDISP2']='Display format for column'
@@ -537,82 +537,30 @@ def modheader(hdul):
 	hdul[1].header.comments['TUNIT16']='physical unit of field'
 	hdul[1].header.comments['TUNIT17']='physical unit of field'
 
-	hdul[1].header['TDMIN1']=1
-	hdul[1].header['TDMIN2']=1
-	hdul[1].header['TDMIN5']=0
-	hdul[1].header['TDMIN6']=0
-	hdul[1].header['TDMIN7']=0
-	hdul[1].header['TDMIN8']=0
-	hdul[1].header['TDMIN9']=0
-	hdul[1].header['TDMIN10']=0
-	hdul[1].header['TDMIN11']=0
-	hdul[1].header['TDMIN12']=0
-	hdul[1].header['TDMIN13']=0
-	hdul[1].header['TDMIN14']=0
-	hdul[1].header['TDMIN16']=0
-	hdul[1].header['TDMIN17']=0
-	hdul[1].header['TDMIN18']=-1
-	hdul[1].header['TDMIN19']=0
-	hdul[1].header['TDMIN20']=0
-	hdul[1].header['TDMIN22']=0
-	hdul[1].header['TDMIN23']=0
 
-	hdul[1].header.comments['TDMIN1']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN2']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN5']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN6']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN7']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN8']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN9']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN10']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN11']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN12']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN13']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN14']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN16']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN17']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN18']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN19']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN20']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN22']='Minimum value expected for field'
-	hdul[1].header.comments['TDMIN23']='Minimum value expected for field'
-
-
-	hdul[1].header['TDMAX1']=960
-	hdul[1].header['TDMAX2']=1100
-	hdul[1].header['TDMAX5']=1
-	hdul[1].header['TDMAX18']=1
-
-	hdul[1].header.comments['TDMAX1']='Maximum value expected for field'
-	hdul[1].header.comments['TDMAX2']='Maximum value expected for field'
-	hdul[1].header.comments['TDMAX5']='Maximum value expected for field'
-	hdul[1].header.comments['TDMAX18']='Maximum value expected for field'
-
-
-
-	hdul[1].header['TPROP1']=0
-	hdul[1].header['TPROP2']=0
-	hdul[1].header['TPROP3']=0
-	hdul[1].header['TPROP4']=0
-	hdul[1].header['TPROP5']=0
-	hdul[1].header['TPROP6']=0
-	hdul[1].header['TPROP7']=0
-	hdul[1].header['TPROP8']=0
-	hdul[1].header['TPROP9']=0
-	hdul[1].header['TPROP10']=0
-	hdul[1].header['TPROP11']=0
-	hdul[1].header['TPROP12']=0
-	hdul[1].header['TPROP13']=0
-	hdul[1].header['TPROP14']=0
-	hdul[1].header['TPROP15']=0
-	hdul[1].header['TPROP16']=0
-	hdul[1].header['TPROP17']=0
-	hdul[1].header['TPROP18']=0
-	hdul[1].header['TPROP19']=0
-	hdul[1].header['TPROP20']=0
-	hdul[1].header['TPROP21']=0
-	hdul[1].header['TPROP22']=0
-	hdul[1].header['TPROP23']=0
+	hdul[1].header.set('TPROP1',0,after='TUCD1')
+	hdul[1].header.set('TPROP2',0,after='TUCD2')
+	hdul[1].header.set('TPROP3',0,after='TUCD3')
+	hdul[1].header.set('TPROP4',0,after='TUCD4')
+	hdul[1].header.set('TPROP5',0,after='TUCD5')
+	hdul[1].header.set('TPROP6',0,after='TUCD6')
+	hdul[1].header.set('TPROP7',0,after='TUCD7')
+	hdul[1].header.set('TPROP8',0,after='TUCD8')
+	hdul[1].header.set('TPROP9',0,after='TUCD9')
+	hdul[1].header.set('TPROP10',0,after='TUCD10')
+	hdul[1].header.set('TPROP11',0,after='TUCD11')
+	hdul[1].header.set('TPROP12',0,after='TUCD12')
+	hdul[1].header.set('TPROP13',0,after='TUCD13')
+	hdul[1].header.set('TPROP14',0,after='TUCD14')
+	hdul[1].header.set('TPROP15',0,after='TUCD15')
+	hdul[1].header.set('TPROP16',0,after='TUCD16')
+	hdul[1].header.set('TPROP17',0,after='TUCD17')
+	hdul[1].header.set('TPROP18',0,after='TUCD18')
+	hdul[1].header.set('TPROP19',0,after='TUCD19')
+	hdul[1].header.set('TPROP20',0,after='TUCD20')
+	hdul[1].header.set('TPROP21',0,after='TUCD21')
+	hdul[1].header.set('TPROP22',0,after='TUCD22')
+	hdul[1].header.set('TPROP23',0,after='TUCD23')
 
 
 	hdul[1].header.comments['TPROP1']='Public column'
@@ -639,33 +587,140 @@ def modheader(hdul):
 	hdul[1].header.comments['TPROP22']='Public column'
 	hdul[1].header.comments['TPROP23']='Public column'
 
+
+	hdul[1].header.set('TDMIN1',1,after='TUCD1')
+	hdul[1].header.set('TDMIN2',1,after='TUCD2')
+	hdul[1].header.set('TDMIN5',0,after='TUCD5')
+	hdul[1].header.set('TDMIN6',0,after='TUCD6')
+	hdul[1].header.set('TDMIN7',0,after='TUCD7')
+	hdul[1].header.set('TDMIN8',0,after='TUCD8')
+	hdul[1].header.set('TDMIN9',0,after='TUCD9')
+	hdul[1].header.set('TDMIN10',0,after='TUCD10')
+	hdul[1].header.set('TDMIN11',0,after='TUCD11')
+	hdul[1].header.set('TDMIN12',0,after='TUCD12')
+	hdul[1].header.set('TDMIN13',0,after='TUCD13')
+	hdul[1].header.set('TDMIN14',0,after='TUCD14')
+	hdul[1].header.set('TDMIN16',0,after='TUCD16')
+	hdul[1].header.set('TDMIN17',0,after='TUCD17')
+	hdul[1].header.set('TDMIN18',-1,after='TUCD18')
+	hdul[1].header.set('TDMIN19',0,after='TUCD19')
+	hdul[1].header.set('TDMIN20',0,after='TUCD20')
+	hdul[1].header.set('TDMIN22',0,after='TUCD22')
+	hdul[1].header.set('TDMIN23',0,after='TUCD23')
+
+	hdul[1].header.comments['TDMIN1']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN2']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN5']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN6']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN7']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN8']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN9']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN10']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN11']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN12']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN13']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN14']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN16']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN17']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN18']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN19']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN20']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN22']='Minimum value expected for field'
+	hdul[1].header.comments['TDMIN23']='Minimum value expected for field'
+
+
+	hdul[1].header.set('TDMAX1',960,after='TDMIN1')
+	hdul[1].header.set('TDMAX2',1100,after='TDMIN2')
+	hdul[1].header.set('TDMAX5',1,after='TDMIN5')
+	hdul[1].header.set('TDMAX18',1,after='TDMIN18')
+
+	hdul[1].header.comments['TDMAX1']='Maximum value expected for field'
+	hdul[1].header.comments['TDMAX2']='Maximum value expected for field'
+	hdul[1].header.comments['TDMAX5']='Maximum value expected for field'
+	hdul[1].header.comments['TDMAX18']='Maximum value expected for field'
+
+
+
+	hdul[2].header.comments['TTYPE1']='The number of the spectrum'
+	hdul[2].header.comments['TTYPE2']='Fibre id'
+	hdul[2].header.comments['TTYPE3']='WEAVE object name from coordinates'
+	hdul[2].header.comments['TTYPE4']='Identifier of the target assigned by survey'
+	hdul[2].header.comments['TTYPE5']='Input Spectrum normalised'
+	hdul[2].header.comments['TTYPE6']='Fit Spectrum normalised'
+
+	hdul[2].header.comments['TFORM1']='data format of field: integer'
+	hdul[2].header.comments['TFORM2']='data format of field: integer'
+	hdul[2].header.comments['TFORM3']='data format of field: ASCII Character'
+	hdul[2].header.comments['TFORM4']='data format of field: ASCII Character'
+	hdul[2].header.comments['TFORM5']='data format of field: 4-byte REAL'
+	hdul[2].header.comments['TFORM6']='data format of field: 4-byte REAL'
+
+	hdul[2].header.set('TDISP1','I4',after='TFORM1')
+	hdul[2].header.set('TDISP2','I4',after='TFORM2')
+	hdul[2].header.set('TDISP3','A20',after='TFORM3')
+	hdul[2].header.set('TDISP4','A30',after='TFORM4')
+
+	hdul[2].header.comments['TDISP1']='Display format for column'
+	hdul[2].header.comments['TDISP2']='Display format for column'
+	hdul[2].header.comments['TDISP3']='Display format for column'
+	hdul[2].header.comments['TDISP4']='Display format for column'
+
+	hdul[2].header.set('TUCD1','meta.id',after='TDISP1')
+	hdul[2].header.set('TUCD2','meta.id',after='TDISP2')
+	hdul[2].header.set('TUCD3','meta.id;meta.main',after='TDISP3')
+	hdul[2].header.set('TUCD4','meta.id',after='TDISP4')
+	hdul[2].header.set('TUCD5','phot.count',after='TFORM5')
+	hdul[2].header.set('TUCD6','phot.count',after='TFORM6')
+	hdul[2].header.comments['TUCD1']='UCD for column'
+	hdul[2].header.comments['TUCD2']='UCD for column'
+	hdul[2].header.comments['TUCD3']='UCD for column'
+	hdul[2].header.comments['TUCD4']='UCD for column'
+	hdul[2].header.comments['TUCD5']='UCD for column'
+	hdul[2].header.comments['TUCD6']='UCD for column'
+
+	hdul[2].header.set('TUNIT5','counts','physical unit of field',after='TUCD5')
+	hdul[2].header.set('TUNIT6','counts','physical unit of field',after='TUCD6')
+
+	hdul[2].header.set('TDMIN1',1,after='TUCD1')
+	hdul[2].header.set('TDMIN2',1,after='TUCD2')
+	hdul[2].header.comments['TDMIN1']='Minimum value expected for field'
+	hdul[2].header.comments['TDMIN2']='Minimum value expected for field'
+	hdul[2].header.set('TDMAX1',960,after='TUCD1')
+	hdul[2].header.set('TDMAX2',1100,after='TUCD2')
+	hdul[2].header.comments['TDMAX1']='Maximum value expected for field'
+	hdul[2].header.comments['TDMAX2']='Maximum value expected for field'
+	hdul[2].header.set('TPROP1',0,after='TUCD1')
+	hdul[2].header.set('TPROP2',0,after='TUCD2')
+	hdul[2].header.set('TPROP3',0,after='TUCD3')
+	hdul[2].header.set('TPROP4',0,after='TUCD4')
+	hdul[2].header.set('TPROP5',0,after='TUCD5')
+	hdul[2].header.set('TPROP6',0,after='TUCD6')
+	hdul[2].header.comments['TPROP1']='Public column'
+	hdul[2].header.comments['TPROP2']='Public column'
+	hdul[2].header.comments['TPROP3']='Public column'
+	hdul[2].header.comments['TPROP4']='Public column'
+	hdul[2].header.comments['TPROP5']='Public column'
+	hdul[2].header.comments['TPROP6']='Public column'
+
+	hdul[2].header.set('TCTYP5','AWAV','Coordinate type',after='TPROP5')
+	hdul[2].header.set('TCTYP6','AWAV','Coordinate type',after='TPROP6')
+	hdul[2].header.set('TCUNI5','Angstrom','Coordinate unit',after='TCTYP5')
+	hdul[2].header.set('TCUNI6','Angstrom','Coordinate unit',after='TCTYP6')
+	hdul[2].header.set('TCRPX5',1,'Pixel coordinate of the reference point',after='TCUNI5')
+	hdul[2].header.set('TCRPX6',1,'Pixel coordinate of the reference point',after='TCUNI6')
+	hdul[2].header.set('TCRVL5',8470.25,'Coordinate value at reference point',after='TCRPX5')
+	hdul[2].header.set('TCRVL6',8470.25,'Coordinate value at reference point',after='TCRPX6')
+	hdul[2].header.set('TCDLT5',0.25,'Coordinate increment at reference point',after='TCRVL5')
+	hdul[2].header.set('TCDLT6',0.25,'Coordinate increment at reference point',after='TCRVL6')
+
+#	hdul[2].header['XTENSION']='BINSPEC'
 	return hdul
 
 
 
 def make_output_fits():
-	output_files = glob.glob(write_directory + 'results/*_results')
-	all_res = []
-	for i in output_files:
-		with open(i) as outf:
-			all_res.append(outf.read().split())
-	t = Table(rows=all_res, names=('Nspec', 'FIBREID', 'CNAME', 'TARGID', 'AMY_ACCEPTANCE', 'AMY_TEFF', 'AMY_TEFF_minus', 'AMY_TEFF_plus', 'AMY_LOGG', 'AMY_LOGG_minus', 'AMY_LOGG_plus', 'AMY_VSINI', 'vsini_minus', 'AMY_VSINI_plus', 'AMY_RV', 'AMY_RV_minus', 'AMY_RV_plus', 'AMY_SLOPE', 'AMY_SLOPE_minus', 'AMY_SLOPE_plus', 'AMY_INTERCEPT', 'AMY_INTERCEPT_minus', 'INTERCEPT_plus'))
 
-	cols=['Nspec', 'FIBREID', 'CNAME', 'TARGID', 'AMY_ACCEPTANCE', 'AMY_TEFF', 'AMY_TEFF_minus','AMY_TEFF_plus', 'AMY_LOGG', 'AMY_LOGG_minus', 'AMY_LOGG_plus', 'AMY_VSINI','vsini_minus', 'AMY_VSINI_plus', 'AMY_RV', 'AMY_RV_minus', 'AMY_RV_plus', 'AMY_SLOPE','AMY_SLOPE_minus', 'AMY_SLOPE_plus', 'AMY_INTERCEPT', 'AMY_INTERCEPT_minus', 'INTERCEPT_plus']
-	formats=['I','I','20A','30A','E','E','E','E','E','E','E', 'E','E','E','E','E','E','E','E','E','E','E','E']
-	print(len(cols),len(formats))
-
-	columns=[]
-	for i in range(len(cols)):
-		columns.append(fits.Column(name=cols[i], array=t[cols[i]],format=formats[i]))
-
-	bintable = fits.BinTableHDU.from_columns(columns)
-	
-
-#	new_hdu = fits.BinTableHDU.from_columns(t['Nspec'],t['FIBREID'], t['CNAME'])#, 'TARGID', 'AMY_ACCEPTANCE', 'AMY_TEFF', 'AMY_TEFF_minus', 'AMY_TEFF_plus', 'AMY_LOGG', 'AMY_LOGG_minus', 'AMY_LOGG_plus', 'AMY_VSINI', 'vsini_minus', 'AMY_VSINI_plus', 'AMY_RV', 'AMY_RV_minus', 'AMY_RV_plus', 'AMY_SLOPE', 'AMY_SLOPE_minus', 'AMY_SLOPE_plus', 'AMY_INTERCEPT', 'AMY_INTERCEPT_minus', 'INTERCEPT_plus')
-
-#	print (t['Nspec'])
-#	t2=
+	#PHU
 	hdr = fits.Header()
 	hdr['COMMENT'] = "WEAVE Contributed Software: AMY"
 	hdr['DATAMVER'] = 7.60
@@ -689,16 +744,64 @@ def make_output_fits():
 	print(hdr['PROV1001'],hdr['DATETIME'])
 	empty_primary = fits.PrimaryHDU(header=hdr)
 
-#binspec
-#(wavelength, flux, wavelength, model(Xp, wavelength) * fitp
+
+	#bin,PARAM
+	output_files = glob.glob(write_directory + 'results/*_results')
+	all_res = []
+	for i in output_files:
+		with open(i) as outf:
+			all_res.append(outf.read().split())
+	t = Table(rows=all_res, names=('Nspec', 'FIBREID', 'CNAME', 'TARGID', 'AMY_ACCEPTANCE', 'AMY_TEFF', 'AMY_TEFF_minus', 'AMY_TEFF_plus', 'AMY_LOGG', 'AMY_LOGG_minus', 'AMY_LOGG_plus', 'AMY_VSINI', 'vsini_minus', 'AMY_VSINI_plus', 'AMY_RV', 'AMY_RV_minus', 'AMY_RV_plus', 'AMY_SLOPE', 'AMY_SLOPE_minus', 'AMY_SLOPE_plus', 'AMY_INTERCEPT', 'AMY_INTERCEPT_minus', 'INTERCEPT_plus'))
+
+	cols=['Nspec', 'FIBREID', 'CNAME', 'TARGID', 'AMY_ACCEPTANCE', 'AMY_TEFF', 'AMY_TEFF_minus','AMY_TEFF_plus', 'AMY_LOGG', 'AMY_LOGG_minus', 'AMY_LOGG_plus', 'AMY_VSINI','vsini_minus', 'AMY_VSINI_plus', 'AMY_RV', 'AMY_RV_minus', 'AMY_RV_plus', 'AMY_SLOPE','AMY_SLOPE_minus', 'AMY_SLOPE_plus', 'AMY_INTERCEPT', 'AMY_INTERCEPT_minus', 'INTERCEPT_plus']
+	formats=['I','I','20A','30A','E','E','E','E','E','E','E', 'E','E','E','E','E','E','E','E','E','E','E','E']
+
+	columns=[]
+	for i in range(len(cols)):
+		columns.append(fits.Column(name=cols[i], array=t[cols[i]],format=formats[i]))
+
+	bintable = fits.BinTableHDU.from_columns(columns)
+	
+
+
+	#binspec
+	output_files = glob.glob(write_directory + 'results/*_spec')
+	all_spec = []
+	col0=[]
+	col1=[]
+	col2=[]
+	col3=[]
+	col4=[]
+	col5=[]
+	for i in output_files:
+		with open(i) as outf:
+			line=outf.read().split(';')
+			col0.append(line[0])
+			col1.append(line[1])
+			col2.append(line[2])
+			col3.append(line[3])
+			col4.append(np.array(np.matrix(line[4])).ravel())
+			col5.append(np.array(np.matrix(line[5])).ravel())
+	t=[col0,col1,col2,col3,col4,col5]
+
+
+	cols=['Nspec', 'FIBREID', 'CNAME', 'TARGID','AMY_SPECTRAIN','AMY_SPECTRAFIT']
+	formats=['I','I','20A','30A','1879E','1879E']
+
+	columns=[]
+	for i in range(len(cols)):
+		columns.append(fits.Column(name=cols[i], array=t[i],format=formats[i]))
+
+	spectable = fits.BinTableHDU.from_columns(columns)
+	
 
 
 
-	hdul = fits.HDUList([empty_primary,bintable])
+	hdul = fits.HDUList([empty_primary,bintable,spectable])
 	hdul = modheader(hdul)
 
 	hdul.writeto(write_directory+'results/'+os.path.splitext(os.path.basename(args.infile[0]))[0]+'_AMY.fits', overwrite=False)
-#	t.write(write_directory+'results/'+os.path.splitext(os.path.basename(args.infile[0]))[0]+'_AMY.fits', format='fits', overwrite=False)
+
 
 
 
