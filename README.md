@@ -145,6 +145,7 @@ Usage:
 		created, named e.g. 'stacked_1003689_AMY.fits', that concatenates the results of all analysed spectra into 
 		one big table. 
 		In the second extension one can find the analysed region of the spectrum, along with its best-fit template match which has been mapped onto the spectrum.
+		An ascii file named e.g., 'stacked_1003689_AMY.dat' is recording the information of inputs and versions for reproducibility.
 		The outputs are written to the specified write directory.
 		
 		For each analysed spectrum, the outputs in the first extension table are:
@@ -178,7 +179,9 @@ Usage:
 				* calculated as the median less the 16th percentile of the marginalised posterior distribution
 				** calculated as the 84th percentile less the median of the marginalised posterior distribution
 
-		The following plots have been commented out in the code, but could easily be produced:
+			
+	
+			The following plots have been commented out in the code, but could easily be produced:
 			- <SPECTRUM>_spectrum.png (in <WRITE_DIRECTORY>/plots/)
 				This is a plot of the analysed region of the spectrum, along with its best-fit template match which has been mapped onto the spectrum.
 
