@@ -128,6 +128,7 @@ Usage:
 		--params: (optional) the path to the parameters.py file to be used. Default is the parameters.py
 		file in the location that it is being run. 
 		--apsclass: True if APS provides good classification for BA stars. Requires reading L2 data. Not implemented yet, keep False.
+		--override: If True, it removes all previously created output files so the OB can be run from scratch.
 
 
 	To run the example:

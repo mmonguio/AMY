@@ -1,5 +1,7 @@
 import numpy as np
 from scipy import interpolate
+import scipy
+import astropy
 import matplotlib
 from datetime import datetime
 from scipy.stats.mstats import mquantiles
@@ -18,29 +20,33 @@ from astropy.table import Table
 # matplotlib.use('Agg')
 from ptemcee import Sampler as PTSampler
 import matplotlib.pyplot as plt
+import matplotlib
 ##import corner
 startTime = datetime.now()
 
 parser = argparse.ArgumentParser(description="Calculate radial velocities and stellar parameters of WEAVE target spectra.")
 
-parser.add_argument("--infile", type=str, required=True, help="input file", nargs=1)
+parser.add_argument("--infiles", type=str, required=True, help="input file", nargs=1)
 parser.add_argument("--outdir", type=str, required=True, help="output directory", nargs=1)
 parser.add_argument("--targlist", type=str, required=True, help="path to list of FIBREIDs or TARGIDs to be analysed. To analyse all BA stars, enter 'all'.", nargs=1)
 parser.add_argument("--params", type=str, required=False, default='parameters.py', help="path to parameter file", nargs=1)
 parser.add_argument("--apsclass", type=bool, required=False, default=False, help="to read APS classification", nargs=1)
+parser.add_argument("--override", type=bool, required=False, default=False, help="remove existing files and start from scratch", nargs=1)
 #parser.add_argument("--setups", type=str, default=None, required=True, help="input setups", nargs='*')
 
 
 args = parser.parse_args()
 write_directory = args.outdir[0]
 target_list = args.targlist[0]
-data_file = args.infile[0]
+data_file = args.infiles[0]
 apsclassification=args.apsclass#[0]
+override=args.override#[0]
 
 if apsclassification==True:
 	print('WARNING: Code still not ready for reading L2 and check APS classification')
 	print('		Please, set --apsclass False')
 	sys.exit()	
+
 
 
 # processing (cropping, smoothing, rebinning, rotational broadening) templates if required 
@@ -233,21 +239,25 @@ def mcmc_one(t):
 
 	# checking if spectrum file exists, and if result already written
 	if os.path.exists(write_directory + '/results/' + os.path.splitext(os.path.basename(t))[0] + '_results'):
-		print('WARNING: result for '+t+' already exists, skipping')
-		return
+		if override:
+			os.remove(write_directory + '/results/' + os.path.splitext(os.path.basename(t))[0] + '_results')
+			os.remove(write_directory + '/results/' + os.path.splitext(os.path.basename(t))[0] + '_spec')
+		else:
+			print('WARNING: result for '+t+' already exists, skipping')
+			return
 
 	# specify unnormalised calibrated flux
 	with fits.open(data_file) as ALLDATA:
-		final_spectra = ALLDATA[1].data[info['TARGID'] == t][0]
-		spectra_before_sky_subtraction = ALLDATA[3].data[info['TARGID'] == t][0]
-		Calibration_function = ALLDATA[5].data[info['TARGID'] == t][0]
+		final_spectra = ALLDATA['RED_DATA'].data[info['TARGID'] == t][0]
+		spectra_before_sky_subtraction = ALLDATA['RED_DATA_NOSS'].data[info['TARGID'] == t][0]
+		Calibration_function = ALLDATA['RED_SENSFUNC'].data[info['TARGID'] == t][0]
 		try: 
-			idx=list(ALLDATA[6].data['FIBREID']).index(t)
+			idx=list(ALLDATA['FIBTABLE'].data['FIBREID']).index(t)
 		except:
-			idx=list(ALLDATA[6].data['TARGID']).index(t)
-		NSPEC = ALLDATA[6].data['Nspec'][idx]
-		FIBREID = ALLDATA[6].data['FIBREID'][idx]
-		CNAME = ALLDATA[6].data['CNAME'][idx]
+			idx=list(ALLDATA['FIBTABLE'].data['TARGID']).index(t)
+		NSPEC = ALLDATA['FIBTABLE'].data['Nspec'][idx]
+		FIBREID = ALLDATA['FIBTABLE'].data['FIBREID'][idx]
+		CNAME = ALLDATA['FIBTABLE'].data['CNAME'][idx]
 	flux = final_spectra * Calibration_function * 1.0e18
 
 	# restrict to desired wavelength range
@@ -716,6 +726,32 @@ def modheader(hdul):
 #	hdul[2].header['XTENSION']='BINSPEC'
 	return hdul
 
+def createDAT():
+	tab = open(write_directory+'results/'+ os.path.splitext(os.path.basename(args.infiles[0]))[0]+'_AMY.dat', "w")
+	tab.write("Date of creation: {}\n".format(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')))
+	tab.write("\n")
+	tab.write("######## OB info and inputs ###########\n")
+	tab.write("OB: {}\n".format(os.path.splitext(os.path.basename(args.infiles[0]))[0].split('_')[1]))
+	tab.write("input file: {}\n".format(data_file))
+	tab.write("output directory: {}\n".format(write_directory))
+	tab.write("output file: {}\n".format(os.path.splitext(os.path.basename(args.infiles[0]))[0]+'_AMY.fits'))
+	tab.write("targlist: {}\n".format(target_list))
+	tab.write("apsclassification: {}\n".format(apsclassification))
+	tab.write("override: {}\n".format(override))
+
+	tab.write("\n")
+	tab.write("######## libraries version ###########\n")
+
+	tab.write("numpy version: {}\n".format(np.version.version))
+	tab.write("astropy version: {}\n".format(astropy.version.version))
+	tab.write("scipy version: {}\n".format(scipy.version.version))
+	tab.write("matplotlib version: {}\n".format(matplotlib.__version__))
+#	tab.write(": {}\n".format())
+	tab.write("\n")
+	tab.write("######## parameters.py file: ###############\n")
+	tab.close()
+	os.system('more parameters.py >>{}'.format(write_directory+'results/'+ os.path.splitext(os.path.basename(args.infiles[0]))[0]+'_AMY.dat'))
+
 
 
 def make_output_fits():
@@ -735,7 +771,7 @@ def make_output_fits():
 	hdr.comments['CS_NME2']='CS author surname(s)'
 	hdr['CS_MAIL'] = 'm.monguio@icc.ub.edu'
 	hdr.comments['CS_MAIL']='CS author email'
-	hdr['PROV1001'] = os.path.splitext(os.path.basename(args.infile[0]))[0]+'.fit'
+	hdr['PROV1001'] = os.path.splitext(os.path.basename(args.infiles[0]))[0]+'.fit'
 	hdr.comments['PROV1001']='L1 file used'
 	hdr['PROV2001'] = ''
 	hdr.comments['PROV2001']='L2 file used'
@@ -794,30 +830,34 @@ def make_output_fits():
 
 	spectable = fits.BinTableHDU.from_columns(columns)
 	
-
-
-
 	hdul = fits.HDUList([empty_primary,bintable,spectable])
 	hdul = modheader(hdul)
 
-	hdul.writeto(write_directory+'results/'+os.path.splitext(os.path.basename(args.infile[0]))[0]+'_AMY.fits', overwrite=False)
+	hdul.writeto(write_directory+'results/'+os.path.splitext(os.path.basename(args.infiles[0]))[0]+'_AMY.fits', overwrite=False, checksum=True)
 
-
+#ascii file with info for reproducibility:
+	createDAT()
 
 
 
 if __name__ ==  '__main__':
 	# checking if results table already exists
-	if os.path.exists(write_directory+'results/'+os.path.splitext(os.path.basename(args.infile[0]))[0]+'_AMY.fits'):
-		print('WARNING: result table already exists, ending process.')
-		sys.exit()
+	if os.path.exists(write_directory+'results/'+os.path.splitext(os.path.basename(args.infiles[0]))[0]+'_AMY.fits'):
+		if override:
+			os.remove(write_directory+'results/'+ os.path.splitext(os.path.basename(args.infiles[0]))[0]+'_AMY.fits')
+		else:
+			print('WARNING: result table already exists, ending process.')
+			sys.exit()
 	if target_list == 'all':
 		print("Processing all BA stars in fits file")
 		BA = []
 		with fits.open(data_file) as ALLDATA:
-			for n,i in enumerate(ALLDATA[6].data['TARGID']):
+			for n,i in enumerate(ALLDATA['FIBTABLE'].data['TARGID']):
 				if 'LR-BA' in i:
-					BA.append(i)
+#			for n,i in enumerate(ALLDATA['FIBTABLE'].data['TARGCLASS']):
+#				if 'STAR_BA' in i:
+					if ALLDATA['FIBTABLE'].data['STATUS'][n]=='A':
+						BA.append(i)
 	else:
 		print("Processing BA stars specified in target list")
 		targlist = np.genfromtxt(target_list, dtype=None, encoding=None)
@@ -825,12 +865,14 @@ if __name__ ==  '__main__':
 		with fits.open(data_file) as ALLDATA:
 			for targ in targlist:
 				try: 
-					idx=list(ALLDATA[6].data['FIBREID']).index(targ)
-					BA.append(ALLDATA[6].data['TARGID'][idx])
+					idx=list(ALLDATA['FIBTABLE'].data['FIBREID']).index(targ)
+					if ALLDATA['FIBTABLE'].data['STATUS'][idx]=='A':
+						BA.append(ALLDATA['FIBTABLE'].data['TARGID'][idx])
 				except:
 					try:
-						idx=list(ALLDATA[6].data['TARGID']).index(targ)
-						BA.append(ALLDATA[6].data['TARGID'][idx])
+						idx=list(ALLDATA['FIBTABLE'].data['TARGID']).index(targ)
+						if ALLDATA['FIBTABLE'].data['STATUS'][idx]=='A':
+							BA.append(ALLDATA['FIBTABLE'].data['TARGID'][idx])
 					except:	
 						print(str(targ)+": Cant find either FIBREID or TARGID in input table.")
 
@@ -847,9 +889,9 @@ def set_globals():
 
     with fits.open(data_file) as ALLDATA:
 	    head0 = ALLDATA[0].header
-	    info = ALLDATA[6].data
-	    data1 = ALLDATA[1].data
-	    head1 = ALLDATA[1].header
+	    info = ALLDATA['FIBTABLE'].data
+	    data1 = ALLDATA['RED_DATA'].data
+	    head1 = ALLDATA['RED_DATA'].header
 	    wave0 = head1['CRVAL1']  
 	    increm = head1['CD1_1']
 	    wavelength = np.array([wave0+increm*a for a in range(len(data1[1]))])
